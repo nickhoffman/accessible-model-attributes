@@ -1,11 +1,32 @@
 == Description
 
-Description goes here.
-
+Determines which model attributes in a Hash of parameters can be set via mass-assignment.
 
 == Example
 
-Example goes here.
+Say we have this model:
+  class User < ActiveRecord::Base
+    attr_accessible :username, password
+  end
 
+And these parameters for creating a new User:
+  params = {
+    :username         => 'bob123',
+    :password         => 'secret',
+    :hashed_password  => 'd6c1fbcf028923cc0480fff4ab459a21',
+    }
+
+If that "params" Hash was used to create a new User:
+  @user = User.new params
+an exception would be raised, because the 'hashed_password' attribute is not settable via mass-assignment.
+
+The solution is to extract the "accessible" attributes from the "params" Hash, like this:
+  accessible_params = AccessibleModelAttributes.extract User, params
+  @user = User.new accessible_params
+
+The "accessible_params" variable will contain this:
+  {:username => 'bob123', password => 'secret'}
+
+== License
 
 Copyright (c) 2008 Nick Hoffman, released under the MIT license.
