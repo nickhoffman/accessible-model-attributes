@@ -1,1 +1,1 @@
-# Include hook code here
+require 'accessible_model_attributes'
